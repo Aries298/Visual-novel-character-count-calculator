@@ -6,26 +6,104 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Char counter</title>
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css"/>
+    <link href="https://fonts.cdnfonts.com/css/anime-ace" rel="stylesheet">
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    <py-env>
-        - pickle
-    </py-env>
+
+    <style>
+    body {
+    background: rgb(0,0,0);
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(21,34,52,1) 50%, rgba(38,61,133,1) 100%);
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;}
+
+    .container {
+    text-align: center;
+    padding: 75px;
+    }
+
+    header {
+    font-family: 'Anime Ace', sans-serif;
+    font-size: 72px;
+    padding: 20px;
+    text-align: center;
+    }
+
+    .inputs {
+    font-family: 'Anime Ace', sans-serif;
+    font-size: 24px;
+    padding: 15px;
+    float: right;
+    margin-right: 375px;
+    }
+
+
+</style>
+    <py-script>
+    COEFFS = (-0.941630, 443.600433)
+
+    from pyodide.ffi import create_proxy
+    from js import document, Element
+
+    def on_change():
+        output = document.getElementById("characters")
+        i1 = document.getElementById("lines")
+        i1 = i1.value
+        try:
+            i1 = int(i1)
+        except:
+            output.value = 'Input value error'
+            return
+        i2 = document.getElementById("script_size")
+        i2 = i2.value
+        try:
+            i2 = float(i2)
+        except:
+            output.value = 'Input value error'
+            return
+
+        if i1 < 0 or i2 < 0:
+            output.value = 'Negative value error'
+            return
+
+        result = COEFFS[0] * i1 + COEFFS[1] * i2
+        result = int(result)
+        print(result)
+        if result < 0:
+            result = 0
+        if result > 2**32-1:
+            output.value = 'Value out of range'
+            return
+
+
+        output.value = f'{result} characters'
+
+
+    </py-script>
 </head>
 <body>
-    <h1>Test</h1>
-    <p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-    <p>
-        <py-script>
-            print("Hello World")
-        </py-script>
-    </p>
-<!--    <form action="/action_page.php">-->
-<!--      <label for="lines">Number of lines:</label>-->
-<!--      <input type="number" id="lines" name="lines"><br><br>-->
-<!--      <label for="script">Script size in kilobytes:</label>-->
-<!--      <input type="number" id="script" name="script"><br><br>-->
-<!--      <input type="submit" value="Submit">-->
-<!--    </form>-->
+<header>Character Counter</header>
+    <div class="container">
+        <div class="inputs">
+            <label for="lines">Number of lines</label>
+            <input type="text" py-input="on_change()" style="font-family:verdana;" id="lines" value=0>
+        </div>
+        <div class="inputs">
+            <label for="lines">Script's size in kilobytes</label>
+            <input type="text" py-input="on_change()" style="font-family:verdana;" id="script_size" value=0>
+        </div>
+        <div class="inputs">
+            <input type="text" style="font-family:verdana; font-size: 48px; padding: 20px; color: black;" disabled id="characters">
+        </div>
+
+    </div>
 </body>
 </html>
+
+
+
+
+
+
