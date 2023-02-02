@@ -42,45 +42,52 @@
 
 </style>
     <py-script>
-    COEFFS = (-0.941630, 443.600433)
+        # Constants used in the calculation of prediction
+        # Coefficients of the regression model
+        COEFFS = (-0.941630, 443.600433)
 
-    from pyodide.ffi import create_proxy
-    from js import document, Element
+        # Libraries
+        from pyodide.ffi import create_proxy
+        from js import document, Element
 
-    def on_change():
-        output = document.getElementById("characters")
-        i1 = document.getElementById("lines")
-        i1 = i1.value
-        try:
-            i1 = int(i1)
-        except:
-            output.value = 'Input value error'
-            return
-        i2 = document.getElementById("script_size")
-        i2 = i2.value
-        try:
-            i2 = float(i2)
-        except:
-            output.value = 'Input value error'
-            return
+        # Function called upon change
+        def on_change():
+            output = document.getElementById("characters")
+            # Getting value of the first input
+            i1 = document.getElementById("lines")
+            i1 = i1.value
+            # Try converting the input value to integer
+            try:
+                i1 = int(i1)
+            except:
+                # Return error message if input value is not valid
+                output.value = 'Input value error'
+                return
+            # Getting value of the second input
+            i2 = document.getElementById("script_size")
+            i2 = i2.value
+            # Try converting the input value to float
+            try:
+                i2 = float(i2)
+            except:
+                # Return error message if input value is not valid
+                output.value = 'Input value error'
+                return
+            # Return error message if input values are negative
+            if i1 < 0 or i2 < 0:
+                output.value = 'Negative value error'
+                return
 
-        if i1 < 0 or i2 < 0:
-            output.value = 'Negative value error'
-            return
-
-        result = COEFFS[0] * i1 + COEFFS[1] * i2
-        result = int(result)
-        print(result)
-        if result < 0:
-            result = 0
-        if result > 2**32-1:
-            output.value = 'Value out of range'
-            return
-
-
-        output.value = f'{result} characters'
-
-
+            result = COEFFS[0] * i1 + COEFFS[1] * i2
+            result = int(result)
+            # Ensure result is not negative or too big
+            if result < 0:
+                result = 0
+            if result > 2**32-1:
+                output.value = 'Value out of range'
+                return
+            # Set the output value
+            output.value = f'{result} characters'
     </py-script>
 </head>
 <body>
